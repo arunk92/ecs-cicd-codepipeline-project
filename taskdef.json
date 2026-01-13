@@ -1,0 +1,19 @@
+{
+  "family": "ecs-bluegreen-task",
+  "containerDefinitions": [
+    {
+      "name": "web",
+      "image": "<IMAGE1_NAME>",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        { "name": "DEPLOYMENT_COLOR", "value": "BLUE" }
+      ]
+    }
+  ]
+}
