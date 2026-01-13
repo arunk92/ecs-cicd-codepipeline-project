@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ECS Blue Green Deployment</title>
+    <style>
+        body { font-family: Arial; background: #0f172a; color: #e5e7eb; padding: 40px; }
+        .card { background: #1e293b; padding: 20px; border-radius: 10px; width: 500px; }
+        h1 { color: #22c55e; }
+        .label { color: #93c5fd; }
+    </style>
+</head>
+<body>
+
+<h1>ECS Blue / Green Deployment Demo 🚀</h1>
+
+<div class="card">
+    <p><span class="label">Deployment Color:</span> <span id="color">Loading...</span></p>
+    <p><span class="label">Task ID:</span> <span id="taskId"></span></p>
+    <p><span class="label">Container ID:</span> <span id="containerId"></span></p>
+    <p><span class="label">Private IP:</span> <span id="ip"></span></p>
+    <p><span class="label">Hostname:</span> <span id="hostname"></span></p>
+    <p><span class="label">Time:</span> <span id="time"></span></p>
+</div>
+
+<script>
+async function loadMetadata() {
+    try {
+        const res = await fetch("http://169.254.170.2/v4/metadata");
+        const data = await res.json();
+
+        document.getElementById("taskId").innerText = data.TaskARN.split("/").pop();
+        document.getElementById("containerId").innerText = data.Containers[0].DockerId.substring(0,12);
+        document.getElementById("ip").innerText = data.Containers[0].Networks[0].IPv4Addresses[0];
+        document.getElementById("hostname").innerText = data.Containers[0].Name;
+        document.getElementById("time").innerText = new Date().toLocaleString();
+
+        // Deployment color logic
+        const color = data.TaskARN.includes("blue") ? "BLUE 🔵" : "GREEN 🟢";
+        document.getElementById("color").innerText = color;
+
+    } catch (err) {
+        document.getElementById("color").innerText = "Metadata not accessible";
+        console.error(err);
+    }
+}
+
+loadMetadata();
+</script>
+
+</body>
+</html>
